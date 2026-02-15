@@ -42,5 +42,19 @@
 }
 .products{
   display: grid;gap: 20px;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.page{
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+.cartContaint{
+  min-width: 300px;
+}
+
+button:disabled{
+  opacity: .1;
+  cursor: not-allowed;
 }
