@@ -8,8 +8,6 @@ export function CartProvider({children}) {
         return storeedCart ? JSON.parse(storeedCart) : [];
     });
 
-    
-
     const addToCart = (product) =>{
         setCart((prev)=>{
             const exists = prev.find((item)=> item.id === product.id);
