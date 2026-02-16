@@ -12,7 +12,7 @@ export default function App(){
     <Routes>
       <Route index element={<Home />} />
       <Route path="/cart" element={<Cart />} />
-    </Routes>
+    </Routes>  
     </>
   )
 }
