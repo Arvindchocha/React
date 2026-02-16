@@ -1,12 +1,13 @@
 import { useContext, useState } from "react";
 import { CartContext } from "../context/CartContext";
-import { products,loading,error} from "../hooks/useProducts";
+import {useProducts} from "../hooks/useProducts";
+import Product from "../components/Product";
 
 export default function Home() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
-  const {addToCart,removeFromCart,total,cart} = useContext(CartContext)
-
+  const {addToCart,cart} = useContext(CartContext)
+  const {products,loading,error} = useProducts()
 
   const filteredProducts = products.filter((product) => {
     const matchesSearch = product.title.toLowerCase().includes(search.toLowerCase().trim());
@@ -20,13 +21,6 @@ export default function Home() {
 
   return (
     <div className="page">
-      <div className="cartContaint">
-      <h2>Cart Count: {cart.length}</h2>
-      <h2>Cart total price: {total === 0 ? "Cart is empty" : total}</h2>
-      {cart.map((item)=>(
-        <Product key={item.id} product={item} removToCart={removeFromCart} />
-      ))}
-      </div>
       <div className="maineContaint">
       <input
         type="text"
@@ -51,19 +45,6 @@ export default function Home() {
       </div>
       {error && <p>{error}</p>}
       </div>  
-    </div>
-  );
-}
-
-function Product({ product, addToCart,removToCart,isInCart }) {
-  return (
-    <div>
-      <h3>{product.title}</h3>
-      <p>₹{product.price}</p>
-      {addToCart &&
-      <button onClick={() => addToCart(product)} disabled={isInCart} >Add to Cart</button>}
-      {removToCart && 
-      <button onClick={()=> removToCart(product)}>remove to cart</button>}
     </div>
   );
 }

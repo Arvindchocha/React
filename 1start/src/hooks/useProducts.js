@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 export function useProducts(){
     const [products,setProducts] = useState([]);
     const [loading,setLoading] = useState(true);
-    const [error,SetError] = useState(null);
+    const [error,setError] = useState(null);
 
     useEffect(()=>{
         const fetchProducts = async ()=>{
@@ -12,7 +12,7 @@ export function useProducts(){
                 const data = await res.json();
                 setProducts(data);
             }catch(err){
-                SetError("Something went wrong")
+                setError(`Something went wrong: ${err.message}`);
             }finally{
                 setLoading(false);
             }
