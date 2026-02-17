@@ -1,15 +1,16 @@
+import React from 'react';
 import {Link} from 'react-router-dom'
-export default function Product({ product, addToCart,removToCart,isInCart }) {
+function Product({ product,removeToCart,inCart=false,addToCart }) {
 
   const handleRemove = (e) => {
     e.preventDefault();  
-    removToCart(product.id);
+    removeToCart(product.id);
   };
-
-  const handleAdd = (e) => {
-    e.preventDefault();  
+  const handleAdd = (e) =>{
+    e.preventDefault();
     addToCart(product);
-  };
+  }
+
   return (
     <Link to={`/product-details/${product.id}`} className="product">
       <img src={product.image} alt="" width={418} height={597} />
@@ -17,10 +18,15 @@ export default function Product({ product, addToCart,removToCart,isInCart }) {
         <h3>{product.title}</h3>
       <p>₹{product.price}</p>
       </div>
-      {addToCart &&
-      <button onClick={handleAdd} disabled={isInCart} >Add to Cart</button>}
-      {removToCart && 
-      <button onClick={handleRemove}>remove to cart</button>}
+      {inCart && 
+        <div className="quantity">
+          {product.quantity === 1 ? <button className='delete' onClick={handleRemove}></button>:<button className='decrease' onClick={handleRemove}></button>}
+          <p>{product.quantity}</p>
+          <button className='increase' onClick={handleAdd}></button>
+        </div>
+        }
     </Link>
   );
 }
+
+export default React.memo(Product);

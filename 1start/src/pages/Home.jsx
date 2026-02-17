@@ -1,12 +1,10 @@
-import { useContext, useState } from "react";
-import { CartContext } from "../context/CartContext";
+import { useState } from "react";
 import { useProducts } from "../hooks/useProducts";
 import Product from "../components/Product";
 
 export default function Home() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
-  const { addToCart, cart } = useContext(CartContext);
   const { products, loading, error } = useProducts();
 
   const filteredProducts = products.filter((product) => {
@@ -17,9 +15,7 @@ export default function Home() {
     return matchesSearch && matchesCategory;
   });
 
-  const isInCart = (id) => {
-    return cart.some((item) => item.id === id);
-  };
+ 
 
   return (
     <div className="page">
@@ -48,8 +44,6 @@ export default function Home() {
                 <Product
                   key={product.id}
                   product={product}
-                  addToCart={addToCart}
-                  isInCart={isInCart(product.id)}
                 />
               ))}
           </div>

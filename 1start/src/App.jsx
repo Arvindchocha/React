@@ -4,6 +4,8 @@ import Cart from "./pages/Cart";
 import NavBar from "./components/NavBar";
 import "./App.css";
 import ProductDetails from "./pages/ProductDetails";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Login from "./pages/Login";
 
 export default function App(){
 
@@ -12,7 +14,8 @@ export default function App(){
     <NavBar />
     <Routes>
       <Route index element={<Home />} />
-      <Route path="/cart" element={<Cart />} />
+      <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
+      <Route path="/login" element={<Login />} />
       <Route path="/product-details/:id" element={<ProductDetails />} />
     </Routes>  
     </>
