@@ -1,41 +1,68 @@
-import { createContext, useCallback, useEffect, useMemo, useState } from "react";
+import { createContext, useEffect, useMemo, useReducer } from "react";
 
 export const CartContext = createContext();
 
-export function CartProvider({children}) {
-    const [cart,setCart] = useState(()=>{
-        const storeedCart = localStorage.getItem("cart");
-        return storeedCart ? JSON.parse(storeedCart) : [];
-    });
+const initialState = [];
 
-    const addToCart = useCallback((product) =>{
-        setCart((prev)=>{
-            const exists = prev.find((item)=> item.id === product.id);
-            if(exists) {
-                return prev.map((item) => 
-                    item.id === product.id ? {...item,quantity:item.quantity+1} : item );
+function cartReducer(state, action) {
+    switch (action.type) {
+        case "ADD":
+            const exists = state.find(
+                (item) => item.id === action.payload.id
+            )
+
+            if (exists) {
+                return state.map((item) =>
+                    item.id === action.payload.id
+                        ? { ...item, quantity: item.quantity + 1 } : item
+                )
             }
-            return [...prev,{...product,quantity:1}];
-        })
-    },[]);
+
+            return [...state, { ...action.payload, quantity: 1 }]
+
+        case "DECREASE":
+            return state
+                .map((item) => item.id === action.payload
+                    ? { ...item, quantity: item.quantity - 1 }
+                    : item
+                )
+                .filter((item) => item.quantity > 0);
+
+        case "REMOVE":
+            return state.filter((item) => item.id !== action.payload)
+
+        default:
+            return state
+
+    }
+}
+
+export function CartProvider({ children }) {
+    const [cart, dispatch] = useReducer(cartReducer,initialState)
+
+    const addToCart = (product) => {
+        dispatch({type:"ADD",payload:product});
+    };
+
+    const decreaseQuantity = (id) =>{
+        dispatch({type:"DECREASE",payload:id});
+    }
 
     const removeFromCart = (id) =>{
-        setCart((prev)=> prev.map((item) => 
-                    item.id === id ? {...item,quantity:item.quantity-1} 
-        : item 
-    )
-        .filter((item)=>item.quantity>0)
-    )}
+        dispatch({type:"REMOVE",payload:id});
+    }
 
-     const total = useMemo(()=>{
-        return cart.reduce((sum,item) => sum + item.price * item.quantity, 0);
-    },[cart]) 
+    const total = useMemo(() => {
+        return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    }, [cart])
 
-       useEffect(()=>{
-        localStorage.setItem("cart",JSON.stringify(cart));
-    },[cart])
+    useEffect(() => {
+        localStorage.setItem("cart", JSON.stringify(cart));
+    }, [cart])
 
 
-    return <CartContext.Provider value={{cart,addToCart,removeFromCart,total}}>{children}</CartContext.Provider>
-    
-}       
+    return <CartContext.Provider value={{ cart, addToCart, removeFromCart,decreaseQuantity, total }}>{children}</CartContext.Provider>
+
+}
+
+
